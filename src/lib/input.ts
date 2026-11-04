@@ -1,0 +1,1 @@
+export const input: { dir: [number, number] | null } = { dir: null };
