@@ -57,7 +57,7 @@ export const JOURNEY: Milestone[] = [
     link: { label: 'Lihat sertifikat', href: 'https://drive.google.com/file/d/1fC6x2FdwUQQnWVNxPMuoglytejE_x9_6/view' },
   },
   { year: 'Jun 2024', title: 'Operation Staff — PT Mandiri Trans Utama', body: 'Masuk tim operasional perusahaan trucking dan mulai bikin sistem internal untuk tim.' },
-  { year: '[BLN THN]', title: 'Mulai bangun FleetPulse', body: 'Sistem order & pantau armada: booking dengan cek kapasitas, status perjalanan, peta GPS live, dan alarm keselamatan.' },
+  { year: 'Jun 2026', title: 'Mulai bangun FleetPulse', body: 'Sistem order & pantau armada: booking dengan cek kapasitas, status perjalanan, peta GPS live, dan alarm keselamatan.' },
   { year: 'Feb 2026', title: 'Membangun Langkaloka', body: 'Marketplace dengan panel penjual dan Loka Feed — sekarang live di langkaloka.id, lagi ditambah pembayaran & cek resi.' },
   { year: 'Sep 2026', title: 'Product Developer — PT Melangkah Bersama Digital', body: 'Membangun dan mengembangkan semua produk MBD.' },
   { year: 'Okt 2026', title: 'Mulai bangun MBD Messaging', body: 'Platform blast WhatsApp & email untuk kampanye perusahaan, dengan keamanan data sebagai prioritas.' },
@@ -91,7 +91,7 @@ export const SKILL_GROUPS: { title: string; color: string; items: string[] }[] =
   { title: 'Integrasi', color: '#F2967A', items: ['Payment gateway (VA, QRIS, e-wallet)', 'API ekspedisi & cek resi', 'GPS armada (TrackSolid)', 'WhatsApp Business Platform', 'Email blast'] },
   { title: 'Keamanan', color: '#F07C8C', items: ['Validasi sisi server', 'Idempotensi webhook', 'Rate limiting', 'Otorisasi per endpoint', 'Anti double-request'] },
   { title: 'Deploy & Tools', color: '#A9A2E8', items: ['Vercel', 'Git & GitHub', 'Domain & DNS', 'cPanel'] },
-  { title: 'Produk & Operasional', color: '#F4C25B', items: ['Analisis kebutuhan', 'Alur ramah semua kalangan', 'Operasional logistik', 'Ngoding bareng AI', '[Tambah skill lain]'] },
+  { title: 'Produk & Operasional', color: '#F4C25B', items: ['Analisis kebutuhan', 'Alur ramah semua kalangan', 'Operasional logistik', 'Ngoding bareng AI'] },
 ];
 
 export const CONTACT = {
