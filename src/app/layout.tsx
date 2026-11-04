@@ -4,7 +4,7 @@ import './globals.css';
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800'] });
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || 'https://kota-sandro.vercel.app';
+   const SITE = 'https://iamsandro.my.id';
 const DESC = 'Portfolio Laksandro Ramadhanu, Product Developer. Setir truknya keliling Kota Sandro, mampir ke 5 tempat, dan kenalan sama proyek-proyekku.';
 
 export const metadata: Metadata = {
