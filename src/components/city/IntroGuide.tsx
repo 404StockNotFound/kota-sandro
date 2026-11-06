@@ -4,7 +4,7 @@ import { useStickers } from '@/store/stickers';
 import { useHydrated } from '@/lib/useHydrated';
 
 const STEPS = [
-  { icon: '🚚', title: 'Setir truknya', body: 'Pakai tombol panah di kiri bawah, atau keyboard (panah / WASD). Spasi buat klakson.' },
+  { icon: '🚚', title: 'Setir truknya', body: 'Geser analog (HP) atau tombol panah / WASD (laptop). Males nyetir? Ketuk bangunan atau tombol “Antar ▶”, truknya jalan sendiri.' },
   { icon: '🅿️', title: 'Parkir di kotak berwarna', body: 'Tiap bangunan punya kotak parkir. Berhenti di situ, terus klik "Masuk".' },
   { icon: '⭐', title: 'Kumpulin 5 stiker', body: 'Selesaikan mini game di tiap tempat. Tiap stiker membuka fitur baru di kota.' },
 ];

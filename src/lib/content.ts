@@ -35,6 +35,13 @@ export const PROJECTS: Project[] = [
     points: ['Satu sistem untuk semua jenis toko', 'Bayar QRIS, transfer, atau tunai', 'Gampang dipakai semua kalangan'],
     stack: 'next.js · supabase',
   },
+  {
+    short: 'KS', name: 'Kota Sandro', color: '#A9A2E8', live: true,
+    desc: 'Web portofolio 3D yang bisa disetir — kamu lagi di dalamnya.',
+    points: ['Kota 3D isometrik dengan truk yang bisa dikendarai', '5 mini game + stiker yang membuka fitur', 'Mode cepat tanpa main untuk HP lemah'],
+    stack: 'next.js · react three fiber · zustand',
+    link: 'https://github.com/404StockNotFound/kota-sandro',
+  },
 ];
 
 export type Skill = { name: string; short?: string; what: string; where: string; pump?: boolean };
@@ -47,21 +54,64 @@ export const SKILLS: Skill[] = [
   { name: 'Integrasi', what: 'Payment, ekspedisi, GPS armada', where: 'Langkaloka, FleetPulse' },
   { name: 'WhatsApp API', what: 'Blast, notifikasi, pengingat', where: 'MBD Messaging' },
 ];
-export type Milestone = { year: string; title: string; body: string; link?: { label: string; href: string } };
+export type MilestoneKind = 'kerja' | 'belajar' | 'proyek';
+export type Milestone = {
+  start: string;              // 'Jul 2021'
+  end?: string;               // 'Jul 2023' atau 'Sekarang'
+  kind: MilestoneKind;
+  title: string;
+  org?: string;
+  body: string;
+  link?: { label: string; href: string };
+};
 
 export const JOURNEY: Milestone[] = [
   {
-    year: 'Des 2023',
-    title: 'Bootcamp JavaScript — Hacktiv8 Indonesia',
-    body: 'Titik awal aku serius ngoding. Empat bulan (Des 2023 – Mar 2024) belajar fundamental JavaScript & TypeScript, bikin web dari nol, sampai lulus dengan sertifikat.',
+    start: 'Jul 2021', end: 'Jul 2023', kind: 'kerja',
+    title: 'Technical Support Specialist', org: 'PT. Republik Teknologi Kreasi Negeri',
+    body: 'Bantu pelanggan troubleshooting & aktivasi modem, ganti tanggal aktif dan jaringan provider, sampai beresin komplain dengan cepat.',
+  },
+  {
+    start: 'Jul 2023', end: 'Nov 2023', kind: 'kerja',
+    title: 'Content Creator', org: 'PT. Creative Ocean Pictures',
+    body: 'Bikin konten untuk akun perusahaan & brand — dari brainstorming ide, syuting, editing video, sampai atur jadwal posting.',
+  },
+  {
+    start: 'Des 2023', end: 'Mar 2024', kind: 'belajar',
+    title: 'Bootcamp JavaScript', org: 'Hacktiv8 Indonesia',
+    body: 'Titik awal aku serius ngoding. Belajar fundamental JavaScript & TypeScript, bikin web dari nol, sampai lulus dengan sertifikat.',
     link: { label: 'Lihat sertifikat', href: 'https://drive.google.com/file/d/1fC6x2FdwUQQnWVNxPMuoglytejE_x9_6/view' },
   },
-  { year: 'Jun 2024', title: 'Operation Staff — PT Mandiri Trans Utama', body: 'Masuk tim operasional perusahaan trucking dan mulai bikin sistem internal untuk tim.' },
-  { year: 'Feb 2026', title: 'Membangun Langkaloka', body: 'Marketplace dengan panel penjual dan Loka Feed — sekarang live di langkaloka.id, lagi ditambah pembayaran & cek resi.' },
-  { year: 'Jun 2026', title: 'Mulai bangun FleetPulse', body: 'Sistem order & pantau armada: booking dengan cek kapasitas, status perjalanan, peta GPS live, dan alarm keselamatan.' },
-  { year: 'Sep 2026', title: 'Product Developer — PT Melangkah Bersama Digital', body: 'Membangun dan mengembangkan semua produk MBD.' },
-  { year: 'Okt 2026', title: 'Mulai bangun MBD Messaging', body: 'Platform blast WhatsApp & email untuk kampanye perusahaan, dengan keamanan data sebagai prioritas.' },
-  { year: 'Nov 2026', title: 'Mulai bangun UMKM Order', body: 'Sistem order lewat WhatsApp untuk UMKM — kuliner, katering, laundry.' },
+  {
+    start: 'Jun 2024', end: 'Sekarang', kind: 'kerja',
+    title: 'Operation Staff', org: 'PT Mandiri Trans Utama',
+    body: 'Masuk tim operasional perusahaan trucking dan mulai bikin sistem internal untuk tim.',
+  },
+  {
+    start: 'Feb 2026', kind: 'proyek',
+    title: 'Membangun Langkaloka',
+    body: 'Marketplace dengan panel penjual dan Loka Feed — sekarang live di langkaloka.id, lagi ditambah pembayaran & cek resi.',
+  },
+  {
+    start: 'Jun 2026', kind: 'proyek',
+    title: 'Mulai bangun FleetPulse',
+    body: 'Sistem order & pantau armada: booking dengan cek kapasitas, status perjalanan, peta GPS live, dan alarm keselamatan.',
+  },
+  {
+    start: 'Sep 2026', end: 'Sekarang', kind: 'kerja',
+    title: 'Product Developer', org: 'PT Melangkah Bersama Digital',
+    body: 'Membangun dan mengembangkan semua produk MBD, dari rancang alur sampai rilis.',
+  },
+  {
+    start: 'Okt 2026', kind: 'proyek',
+    title: 'Mulai bangun MBD Messaging',
+    body: 'Platform blast WhatsApp & email untuk kampanye perusahaan, dengan keamanan data sebagai prioritas.',
+  },
+  {
+    start: 'Nov 2026', kind: 'proyek',
+    title: 'Mulai bangun UMKM Order',
+    body: 'Sistem order lewat WhatsApp untuk UMKM — kuliner, katering, laundry.',
+  },
 ];
 export const ABOUT = {
   headline: 'Aku bikin software yang beneran kepake di lapangan.',
@@ -70,7 +120,7 @@ export const ABOUT = {
   stats: [
     { value: '4', label: 'produk dibangun' },
     { value: '2', label: 'produk sudah live' },
-    { value: '2+ thn', label: 'di operasional logistik' },
+    { value: '5+ thn', label: 'pengalaman kerja' },
   ],
   highlights: [
     { icon: '🚚', title: 'Dari lapangan, buat lapangan', body: 'Kerja di operasional trucking sejak 2024. FleetPulse lahir dari masalah yang aku temui sendiri tiap hari.' },
@@ -101,7 +151,6 @@ export const CONTACT = {
   socials: [
     { key: 'linkedin', label: 'LinkedIn', handle: 'Laksandro Ramadhanu', href: 'https://www.linkedin.com/in/laksandro-ramadhanu/', color: '#0A66C2' },
     { key: 'github', label: 'GitHub', handle: '404StockNotFound', href: 'https://github.com/404StockNotFound', color: '#1F2A3A' },
-    { key: 'instagram', label: 'Instagram', handle: '@lilsxxdro', href: 'https://instagram.com/lilsxxdro', color: '#D9488B' },
   ],
 };
 

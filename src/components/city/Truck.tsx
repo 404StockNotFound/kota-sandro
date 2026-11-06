@@ -2,7 +2,7 @@
 import { useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
-import { isRoad } from '@/lib/cityMap';
+import { isRoad, findPath } from '@/lib/cityMap';
 import { input } from '@/lib/input';
 import { PLACES } from '@/lib/places';
 import { useStickers } from '@/store/stickers';
@@ -18,6 +18,8 @@ export default function Truck() {
   const pos = useRef({ r: 5, c: 1 });
   const facing = useRef<[number, number]>([0, 1]);
   const camTarget = useRef(new THREE.Vector3());
+  const path = useRef<[number, number][] | null>(null);
+  const pathTarget = useRef<string | null>(null);
   // kamera diambil langsung per frame (lihat useFrame)
 
   const got = useStickers((s) => s.got);
@@ -35,6 +37,34 @@ export default function Truck() {
     const p = pos.current;
     const d = input.dir;
     const sp = (turbo && got.includes('bensin') ? 7 : 3.5) * Math.min(delta, 0.05);
+    const city = useCity.getState();
+    let autoMoving = false;
+
+    // autopilot: tap tujuan → truk nyetir sendiri lewat jalan
+    if (d) {
+      if (city.auto) { city.setAuto(null); path.current = null; pathTarget.current = null; }
+    } else if (city.auto) {
+      if (pathTarget.current !== city.auto || !path.current) {
+        const goal = PLACES.find((pl) => pl.key === city.auto)!.parking;
+        path.current = findPath([Math.round(p.r), Math.round(p.c)], goal, tolOpen);
+        pathTarget.current = city.auto;
+      }
+      const next = path.current?.[0];
+      if (!next) {
+        path.current = null; pathTarget.current = null; city.setAuto(null);
+      } else {
+        const dr = next[0] - p.r, dc = next[1] - p.c;
+        if (Math.abs(dr) + Math.abs(dc) <= sp) {
+          p.r = next[0]; p.c = next[1];
+          path.current!.shift();
+        } else if (Math.abs(dr) > 0.001) {
+          p.r += Math.sign(dr) * sp; facing.current = [Math.sign(dr), 0];
+        } else {
+          p.c += Math.sign(dc) * sp; facing.current = [0, Math.sign(dc)];
+        }
+        autoMoving = true;
+      }
+    }
 
     if (d) {
       const [dr, dc] = d;
@@ -61,7 +91,8 @@ export default function Truck() {
     }
 
     // asap knalpot (cuma kelihatan pas jalan)
-    const moving = !!input.dir;
+    const moving = !!input.dir || autoMoving;
+    if (moving) useStickers.getState().startRun();
     if (moving !== wasMoving.current) {
       wasMoving.current = moving;
       sfx.engine(moving, turbo && got.includes('bensin'));

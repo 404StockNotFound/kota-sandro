@@ -5,9 +5,12 @@ import { input } from '@/lib/input';
 import { PLACES, getPlace } from '@/lib/places';
 import { useStickers } from '@/store/stickers';
 import { useCity } from '@/store/city';
-import { sfx } from '@/lib/sfx';
+import { sfx, unlockAudio } from '@/lib/sfx';
+import Joystick from './Joystick';
 import SoundToggle from '@/components/SoundToggle';
 import IntroGuide from './IntroGuide';
+import GuestbookModal from './GuestbookModal';
+import { formatRun } from '@/lib/time';
 
 const KEYS: Record<string, [number, number]> = {
   ArrowUp: [-1, 0], w: [-1, 0], W: [-1, 0],
@@ -25,8 +28,12 @@ const PADS: { label: string; aria: string; dir: [number, number] }[] = [
 
 export default function CityHud() {
   const got = useStickers((s) => s.got);
-  const { parked, cell, turbo, toggleTurbo, honk, doHonk } = useCity();
+  const { parked, cell, turbo, toggleTurbo, honk, doHonk, auto, setAuto, setGuestbookOpen } = useCity();
+  const startedAt = useStickers((s) => s.startedAt);
+  const finishedAt = useStickers((s) => s.finishedAt);
+  const runTime = startedAt && finishedAt ? formatRun(finishedAt - startedAt) : null;
   const [showHonk, setShowHonk] = useState(false);
+  const [picking, setPicking] = useState(false);
 
   const night = got.includes('pos');
   const hasTurbo = got.includes('bensin');
@@ -42,9 +49,13 @@ export default function CityHud() {
     const up = (e: KeyboardEvent) => { if (KEYS[e.key]) input.dir = null; };
     window.addEventListener('keydown', down);
     window.addEventListener('keyup', up);
+    window.addEventListener('pointerdown', unlockAudio);
+    window.addEventListener('keydown', unlockAudio);
     return () => {
       window.removeEventListener('keydown', down);
       window.removeEventListener('keyup', up);
+      window.removeEventListener('pointerdown', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
       input.dir = null;
       sfx.engine(false);
     };
@@ -75,11 +86,66 @@ export default function CityHud() {
   return (
     <div className="pointer-events-none absolute inset-0 select-none text-[#1F2A3A]">
       <div className="flex items-start justify-between gap-2 p-3.5">
-        <span className="pointer-events-auto inline-flex min-w-0 items-center gap-2 rounded-full bg-white/95 px-3.5 py-2 text-[13px] font-bold shadow">
-          <span className="inline-block flex-none text-[#E0704F]" style={{ transform: `rotate(${angle}deg)` }}>➜</span>
-          <span className="truncate">{next ? `Tujuan berikutnya: ${next.name}` : 'Semua stiker terkumpul! 🏆'}</span>
-        </span>
-        <SoundToggle className="pointer-events-auto flex-none" />
+        {auto ? (
+          <button
+            onClick={() => { setAuto(null); setPicking(false); }}
+            className="pointer-events-auto inline-flex min-w-0 items-center gap-2 rounded-full bg-[#1F2A3A] px-3.5 py-2 text-[13px] font-bold text-white shadow"
+          >
+            <span className="animate-pulse">🚚</span>
+            <span className="truncate">Otw ke {getPlace(auto).name}…</span>
+            <span className="flex-none rounded-full bg-white/15 px-2 py-0.5 text-[11px] font-extrabold">Stop ✕</span>
+          </button>
+        ) : (
+          <div className="pointer-events-auto relative min-w-0">
+            <button
+              onClick={() => setPicking((v) => !v)}
+              aria-expanded={picking}
+              className="inline-flex max-w-full min-w-0 items-center gap-2 rounded-full bg-white/95 px-3.5 py-2 text-[13px] font-bold shadow"
+            >
+              <span className="inline-block flex-none text-[#E0704F]" style={{ transform: `rotate(${angle}deg)` }}>➜</span>
+              <span className="truncate">{next ? `Tujuan: ${next.name}` : `Semua stiker terkumpul! 🏆${runTime ? ` · ${runTime}` : ''}`}</span>
+              <span className="flex-none rounded-full bg-[#E0704F] px-2 py-0.5 text-[11px] font-extrabold text-white">
+                Antar {picking ? '▲' : '▼'}
+              </span>
+            </button>
+
+            {picking && (
+              <div className="absolute left-0 top-[calc(100%+8px)] z-20 flex w-[250px] flex-col gap-1 rounded-2xl bg-white p-2 shadow-xl">
+                <span className="px-2 pb-1 pt-0.5 text-[11px] font-extrabold uppercase tracking-wide text-slate-400">Antar aku ke…</span>
+                {PLACES.map((p) => {
+                  const done = got.includes(p.key);
+                  const isNext = next?.key === p.key;
+                  return (
+                    <button
+                      key={p.key}
+                      onClick={() => { setAuto(p.key); setPicking(false); }}
+                      className={`flex items-center gap-2.5 rounded-xl px-2 py-2 text-left transition-colors hover:bg-[#F5F7F5] ${isNext ? 'bg-[#FDF0EA]' : ''}`}
+                    >
+                      <span className="h-7 w-7 flex-none rounded-lg" style={{ background: p.color }} />
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-extrabold">{p.name}</span>
+                        <span className="block truncate text-xs font-semibold text-slate-500">{p.what}</span>
+                      </span>
+                      <span className="flex-none text-xs font-extrabold">
+                        {done ? <span className="text-[#3E9B66]">✓</span> : isNext ? <span className="text-[#E0704F]">Berikutnya</span> : <span className="text-slate-300">★</span>}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+        <div className="pointer-events-auto flex flex-none gap-2">
+          <button
+            onClick={() => setGuestbookOpen(true)}
+            aria-label="Buka buku tamu"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-lg shadow"
+          >
+            📜
+          </button>
+          <SoundToggle className="flex-none" />
+        </div>
       </div>
 
       {showHonk && (
@@ -107,7 +173,13 @@ export default function CityHud() {
         </div>
       )}
 
-      <div className="pointer-events-auto absolute bottom-3 left-3 grid grid-cols-2 gap-1.5 sm:bottom-4 sm:left-4 sm:gap-2" onContextMenu={(e) => e.preventDefault()}>
+      {/* HP / layar sentuh: analog */}
+      <div className="pointer-events-auto absolute bottom-3 left-3 hidden pointer-coarse:block">
+        <Joystick onStart={unlockAudio} />
+      </div>
+
+      {/* laptop / mouse: tombol panah */}
+      <div className="pointer-events-auto absolute bottom-3 left-3 grid grid-cols-2 gap-1.5 sm:bottom-4 sm:left-4 sm:gap-2 pointer-coarse:hidden" onContextMenu={(e) => e.preventDefault()}>
         {PADS.map((p) => (
           <button
             key={p.aria}
@@ -144,6 +216,7 @@ export default function CityHud() {
         </button>
       </div>
 
+      <GuestbookModal />
       <IntroGuide />
     </div>
   );

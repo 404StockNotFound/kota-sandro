@@ -1,8 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { CONTACT, waLink } from '@/lib/content';
-import { useStickers } from '@/store/stickers';
-import { useHydrated } from '@/lib/useHydrated';
+   import CitizenCard from './CitizenCard';
 
 const Icon = ({ name }: { name: string }) => {
   const p = { width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
@@ -17,21 +16,10 @@ const Icon = ({ name }: { name: string }) => {
 };
 
 export default function ContactInfo() {
-  const hydrated = useHydrated();
-  const all = useStickers((s) => s.got.length === 5);
   const [copied, setCopied] = useState(false);
-  const [shared, setShared] = useState('');
 
   const copyEmail = async () => {
     try { await navigator.clipboard.writeText(CONTACT.email); setCopied(true); setTimeout(() => setCopied(false), 1800); } catch {}
-  };
-
-  const share = async () => {
-    const data = { title: 'Kota Sandro', text: 'Aku udah keliling Kota Sandro dan dapat 5/5 stiker! 🚚', url: window.location.origin };
-    try {
-      if (navigator.share) await navigator.share(data);
-      else { await navigator.clipboard.writeText(`${data.text} ${data.url}`); setShared('Link disalin!'); }
-    } catch {}
   };
 
   return (
@@ -100,17 +88,7 @@ export default function ContactInfo() {
         </div>
       </div>
 
-      {hydrated && all && (
-        <div className="flex flex-col gap-2 rounded-[22px] bg-gradient-to-br from-[#F7D774] to-[#F2967A] p-5">
-          <span className="text-xs font-extrabold tracking-[.08em]">KARTU WARGA KEHORMATAN</span>
-          <span className="text-[26px] font-extrabold tracking-tight">Kamu udah keliling Kota Sandro!</span>
-          <span className="text-sm font-semibold">5/5 stiker · truk emas kebuka</span>
-          <div className="flex items-center gap-3">
-            <button onClick={share} className="min-h-11 rounded-xl bg-[#1F2A3A] px-4 font-extrabold text-white">Bagikan kartu</button>
-            {shared && <span className="text-sm font-bold">{shared}</span>}
-          </div>
-        </div>
-      )}
+      <CitizenCard />
     </>
   );
 }

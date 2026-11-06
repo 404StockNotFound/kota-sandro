@@ -8,6 +8,9 @@ import { PlaceModel, LABEL_Y } from './models';
 import { N, isRoad, isShortcut, TREES } from '@/lib/cityMap';
 import { PLACES } from '@/lib/places';
 import { useStickers } from '@/store/stickers';
+import { useCity } from '@/store/city';
+import { useGuestbook } from '@/store/guestbook';
+import GuestbookBoard from './GuestbookBoard';
 import Truck from './Truck';
 
 function Cam() {
@@ -41,6 +44,7 @@ function Ground({ tolOpen, night }: { tolOpen: boolean; night: boolean }) {
   return <>{tiles}</>;
 }
 function Buildings({ got, night }: { got: string[]; night: boolean }) {
+  const setAuto = useCity((st) => st.setAuto);
   return (
     <>
       {PLACES.map((p) => {
@@ -55,7 +59,12 @@ function Buildings({ got, night }: { got: string[]; night: boolean }) {
               <planeGeometry args={[0.8, 0.8]} />
               <meshStandardMaterial color={p.color} transparent opacity={0.45} />
             </mesh>
-            <group position={[c, 0, r]}>
+            <group
+              position={[c, 0, r]}
+              onClick={(e) => { e.stopPropagation(); setAuto(p.key); }}
+              onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer'; }}
+              onPointerOut={() => { document.body.style.cursor = ''; }}
+            >
               <group rotation={[0, rotY, 0]} scale={1.15}>
                 <PlaceModel kind={p.key} color={p.color} night={night} />
               </group>
@@ -107,6 +116,7 @@ export default function CityScene({ onReady }: { onReady?: () => void }) {
   const got = useStickers((s) => s.got);
   const night = got.includes('pos');
   const tolOpen = got.includes('tol');
+  const guestCount = useGuestbook((st) => st.entries.length);
 
   return (
     <Canvas shadows="percentage" dpr={[1, 2]} onCreated={() => setTimeout(() => onReady?.(), 900)}>
@@ -134,6 +144,7 @@ export default function CityScene({ onReady }: { onReady?: () => void }) {
         <Buildings got={got} night={night} />
         <Trees night={night} />
         {!tolOpen && <Barrier />}
+        <GuestbookBoard count={guestCount} night={night} />
         <Truck />
       </Suspense>
     </Canvas>
