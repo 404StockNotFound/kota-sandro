@@ -66,15 +66,15 @@ export type Milestone = {
 };
 
 export const JOURNEY: Milestone[] = [
-  {
-    start: 'Jul 2021', end: 'Jul 2023', kind: 'kerja',
-    title: 'Technical Support Specialist', org: 'PT. Republik Teknologi Kreasi Negeri',
-    body: 'Bantu pelanggan troubleshooting & aktivasi modem, ganti tanggal aktif dan jaringan provider, sampai beresin komplain dengan cepat.',
+   {
+    start: 'Sep 2021', end: 'Jul 2023', kind: 'kerja',
+    title: 'Technical Support', org: 'PT. Republik Teknologi Kreasi Negeri',
+    body: 'Diagnosis dan beresin gangguan jaringan pakai tools teknis biar downtime minim, koordinasi bareng tim buat troubleshooting, dan olah keluhan pelanggan jadi laporan data.',
   },
   {
-    start: 'Jul 2023', end: 'Nov 2023', kind: 'kerja',
+    start: 'Jul 2023', end: 'Des 2023', kind: 'kerja',
     title: 'Content Creator', org: 'PT. Creative Ocean Pictures',
-    body: 'Bikin konten untuk akun perusahaan & brand — dari brainstorming ide, syuting, editing video, sampai atur jadwal posting.',
+    body: 'Rencanain, tulis naskah, edit, dan publish konten digital. Riset tren buat strategi konten TikTok, sampai 8 konten per hari dengan ratusan ribu penonton.',
   },
   {
     start: 'Des 2023', end: 'Mar 2024', kind: 'belajar',
@@ -118,8 +118,8 @@ export const ABOUT = {
   lead:
     'Halo, aku Sandro, Product Developer di PT Melangkah Bersama Digital. Sehari-hari aku juga kerja di operasional PT Mandiri Trans Utama, jadi aku tahu rasanya pakai sistem yang ribet. Makanya yang aku bangun harus simpel, aman, dan langsung kepake.',
   stats: [
-    { value: '4', label: 'produk dibangun' },
-    { value: '2', label: 'produk sudah live' },
+{ value: '5', label: 'proyek dibangun' },
+{ value: '3', label: 'sudah live' },
     { value: '5+ thn', label: 'pengalaman kerja' },
   ],
   highlights: [
